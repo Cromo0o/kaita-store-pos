@@ -31,6 +31,6 @@ The system uses different algorithms to optimize data visualization:
 
 ## 📚 Academic Details
 - University: Escuela Politécnica Nacional
-- Subject: Programación I.
-- Career: Ingeniería en Ciencia de Datos e IA.
+- Subject: Programming I.
+- Career: Data Science and AI Engineering.
 - Developer: Matthew Llerena Montoya.
