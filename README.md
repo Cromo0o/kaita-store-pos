@@ -18,7 +18,7 @@ The system uses different algorithms to optimize data visualization:
 ### 3. Data Persistence
 - **Reading and writing files (.csv):** All product and sales information is automatically saved in plain text files so that data is not lost when the program is closed.
 
-### 4. Recursividad
+### 4. Recursivity
 - Implementation of recursive functions for specific processes, such as calculating applied discounts or validation processes, ensuring modular and efficient code.
 
 
