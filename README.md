@@ -24,10 +24,11 @@ The system uses different algorithms to optimize data visualization:
 ---
 
 ## 🛠️ Specifications
-- **Lenguaje**: C.
-- **Compilador**: gcc o clang.
-- **Arquitectura**: x86_64.
-- **Estado del Proyecto**: In progress.
+- **Programming Language**: C.
+- **Compiler**: gcc or clang.
+- **Architecture**: x86_64.
+- **Project status**: In progress.
+- **Operating system used**: Windows 11.
 
 ## 📚 Academic Details
 - University: Escuela Politécnica Nacional
