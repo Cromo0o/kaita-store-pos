@@ -6,7 +6,6 @@
 //Funcion para abrir la caja o mantenerla cerrada
 //Encargada de dar paso a que funcione todo el programa
 int abrirCaja(int estadoCaja) {
-    
     int opcion;
 
     if (estadoCaja == 1) {
