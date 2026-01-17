@@ -21,7 +21,6 @@ The system uses different algorithms to optimize data visualization:
 ### 4. Recursividad
 - Implementation of recursive functions for specific processes, such as calculating applied discounts or validation processes, ensuring modular and efficient code.
 
----
 
 ## 🛠️ Specifications
 - **Programming Language**: C.
