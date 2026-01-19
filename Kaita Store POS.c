@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-#define IVA 0.15    // (15%  -> 0.15)  (8% -> 0.08)    (0% -> 0.00)
 #include <windows.h>
 
 //Funcion para abrir la caja o mantenerla cerrada
@@ -104,6 +103,7 @@ int main(void){
     const int MAX_PRODUCTOS = 10;  
         
     int programaActivo = 1;
+    float IVA = 0.15; //IVA estandar, pero que se puede modificar
 
     struct productos lista[100];
     struct factura carrito[10];
@@ -293,17 +293,31 @@ int main(void){
                     printf("Producto agregado correctamente.\n");
                     break;
                 case 6:
-                    printf("1\n");
+                    printf("%f", IVA);
                     break;
                 case 7:
                     printf("1\n");
                     programaActivo = 0;
                     break;
                 
-                case 8:
+                case 8: {
+                    //Variable temporal para tratar con el valor ingresado
+                    //y con el valor que se usará en el programa
+                    int IVAtemp;
                     
+                    printf("El IVA actual es del %.0f%%\n", IVA * 100);
+                    printf("Digite el nuevo IVA a aplicar:\n>>");
+                    scanf("%d", &IVAtemp);
+
+                    //Validamos que el IVA sea un valor razonable
+                    if ( IVAtemp > 0 && IVAtemp <= 100){
+                        printf("EL nuevo IVA es del %d%%\n", IVAtemp);
+                        IVA = IVAtemp / 100.0;
+                    } else{
+                        printf("El valor ingresado no es valido, vuelta a intentar.\n");
+                    }
                     break;
-            
+                }
                 default:
                     printf("Opcion inválida :(\n");
                     break;
