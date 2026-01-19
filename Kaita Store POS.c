@@ -306,7 +306,7 @@ int main(void){
                     int IVAtemp;
                     
                     printf("El IVA actual es del %.0f%%\n", IVA * 100);
-                    printf("Digite el nuevo IVA a aplicar:\n>>");
+                    printf("Digite un valor entero entre el 0 y 100 del IVA deseado\n>>");
                     scanf("%d", &IVAtemp);
 
                     //Validamos que el IVA sea un valor razonable
