@@ -152,7 +152,7 @@ int main(void){
             printf("5. Añadir nuevos productos al catálogo\n");
             printf("6. Facturar productos\n");
             printf("7. Entregar reporte general de la caja y cerrar caja\n");
-            printf(">>");
+            printf("8. Cambiar el valor del IVA\n>>");
             scanf("%d", &opcionSwitch);
 
             switch (opcionSwitch){
@@ -298,6 +298,10 @@ int main(void){
                 case 7:
                     printf("1\n");
                     programaActivo = 0;
+                    break;
+                
+                case 8:
+                    
                     break;
             
                 default:
