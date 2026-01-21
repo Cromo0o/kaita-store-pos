@@ -18,7 +18,10 @@ int abrirCaja(int estadoCaja) {
     }
 
     //Si estadoCaja == 0 pues la caja inicialmente esta cerrada
-    printf("\n##  CAJA CERRADA  ##\n");
+    printf("\n");
+    printf("*----------------------*\n");
+    printf("|##   CAJA CERRADA   ##|\n");
+    printf("*----------------------*\n");
     printf("Digite 1 para abrirla y empezar el turno (0 para cancelar): \n");
     printf(">>");
  
@@ -30,9 +33,10 @@ int abrirCaja(int estadoCaja) {
     }
 
     if (opcion == 1) {
-        
-        printf("\n##  CAJA ABIERTA  ##\n");
-        printf("Muchos exitos en su turno\n\n");
+        printf("\n");
+        printf("*----------------------*\n");
+        printf("|##   CAJA ABIERTA   ##|\n");
+        printf("*----------------------*\n");
         return 1;
     
     } else {
@@ -128,9 +132,12 @@ int main(void){
     //Permitimos que se muestren caracteres especiales
     SetConsoleOutputCP(65001);
     int estadoCaja = 0;         // 0 = Cerrada     1 = Abierta
-    int i = 0, j = 0, opcionSwitch, opcionIf;   //j será el numero total de productos
+    int i = 0, j = 0;           //j será el numero total de productos
+    int opcionSwitch, opcionIf;   
+    
     float totalProductosIVA, totalProductosNoIVA, totalVentas, subtotal;
     float acumuladoSinIVA = 0, acumuladoIVA = 0, acumuladoConIVA = 0;
+    
     const int MAX_PRODUCTOS = 10;  
         
     int programaActivo = 1;
@@ -173,9 +180,10 @@ int main(void){
         }
 
         while(programaActivo){
-            printf("\n\n");
+            printf("\n-----------------------------------------------------------------------\n");
+            printf("\n");
             printf("*---------------------------------------------*\n");
-            printf("*|    Punto de venta express Kaita Store     |*\n");
+            printf("|     Punto de venta express Kaita Store      |\n");
             printf("*---------------------------------------------*\n");
             printf("\n");
             printf("Qué es lo que desea hacer?\n");
@@ -306,7 +314,10 @@ int main(void){
                     fclose(inventario);
                     i++; // Actualiza el tamaño de la lista
                     tamanioArreglo = i;
-                    printf("Producto agregado correctamente.\n");
+                    printf("*----------------------------------*\n");
+                    printf("| Producto agregado correctamente. |\n");
+                    printf("*----------------------------------*\n");
+                    printf("---------------------------------------------------------------\n");
                     break;
                 case 6:
                     printf("Digite la cedula afiliada:\n>>");
