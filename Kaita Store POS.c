@@ -93,6 +93,38 @@ void mostrarCarrito(struct factura carrito[], int j){
         printf("---------------------------------------------------\n");
 }
 
+//Funcion para verificar si es que el cliente está afiliado a la tienda
+void verificarAfiliacion(long long int CI){
+
+    int cantidadDocumentos = 300;
+    long long int arr[500];
+    int afiliado = 0;
+    char nombre[100];
+
+    FILE * afiliacion;
+    afiliacion = fopen("afiliacion.csv","r");
+
+    if(afiliacion != NULL){
+        for (int i = 0; i < cantidadDocumentos; i++){
+            fscanf(afiliacion, "%I64d,%[^\n]\n", &arr[i], nombre);
+            if(CI == arr[i]){
+                afiliado = 1;
+                break;
+            }
+        }
+        
+        if(afiliado == 1){
+            printf("El cliente %s está afiliado", nombre);
+        }
+        else{
+            printf("El cliente no está afiliado");
+        }
+        fclose(afiliacion);
+    } else{
+        printf("No se pudo abrir el archivo");
+    }
+}
+
 int main(void){
     //Permitimos que se muestren caracteres especiales
     SetConsoleOutputCP(65001);
@@ -104,6 +136,8 @@ int main(void){
         
     int programaActivo = 1;
     float IVA = 0.15; //IVA estandar, pero que se puede modificar
+    long long int documentoIdentidad;
+    int tamanioArreglo;
 
     struct productos lista[100];
     struct factura carrito[10];
@@ -117,6 +151,7 @@ int main(void){
         while (fgets(linea, sizeof(linea), inventario)) {
             sscanf(linea, "%[^,],%d,%f,%d", lista[i].marca, &lista[i].stock, &lista[i].precio, &lista[i].necesidad);
             i++;
+            tamanioArreglo = i;
         }
         fclose(inventario);
     } else{
@@ -157,7 +192,7 @@ int main(void){
 
             switch (opcionSwitch){
                 case 1:
-                    mostrarCatalogo(lista, i);
+                    mostrarCatalogo(lista, tamanioArreglo);
                     break;
                 case 2:
                     printf("1\n");
@@ -166,8 +201,8 @@ int main(void){
                     printf("1\n");
                     break;
                 case 4:
-                    /*
-                    mostrarCatalogo(lista);
+                    //Cada que se actualice un producto, actualizar en el archivo inventario.csv
+                    mostrarCatalogo(lista, tamanioArreglo);
 
                     printf("\nDesea actualizar algun producto?\n");
                     printf("1 -> SI\n");
@@ -176,14 +211,10 @@ int main(void){
                     scanf("%d", &opcionIf);
 
                     if (opcionIf == 2){
-                                
                         printf("\nVolviendo al menu...\n\n");
-
-                        goto inicio;    //Regresamos al menu de opciones del punto de venta
-
+                        break;
                     }
                     else if(opcionIf == 1){
-                            
                         int stockActualizar;  //Unidades a actualizar
                         float precioActualizar; //Actualizar a un nuevo precio
                         
@@ -194,22 +225,15 @@ int main(void){
                         i -= 1;
 
                         if ( ( i >= 0 ) && ( i <= 20 ) ){
-
                             printf("El precio actual de %s es de $%.2f, que nuevo precio desea poner?\n", lista[i].marca, lista[i].precio);
                             printf(">>");
                             scanf("%f", &precioActualizar);
 
                             if (precioActualizar >= 0.00){
-                                    
                                 lista[i].precio = precioActualizar;    //Actualizamos el stock
-                                    
-                            }
-                            else{
-
+                            } else{
                                 printf("La cantidad a ingresar debe ser mayor o igual que cero");
                                 printf("\nVolviendo al menu...\n\n");
-                                    
-
                             }
                                 
                             printf("Cuantas unidades de %s desea poner, actualmente tiene %d\n", lista[i].marca, lista[i].stock);
@@ -217,45 +241,25 @@ int main(void){
                             scanf("%d", &stockActualizar);
 
                             if (stockActualizar >= 0){
-                                    
                                 lista[i].stock = stockActualizar;    //Actualizamos el stock
-                                    
                                 printf("\nCatalogo actualizado correctamente\n");
                                 printf("\nVolviendo al menu...\n\n");
-                                    
-                            }
-                            else{
-
+                            }else{
                                 printf("La cantidad a ingresar debe ser mayor o igual que cero");
-                                printf("\nVolviendo al menu...\n\n");
-                                
-
+                                printf("\nVolviendo al menu...\n\n");                                
                             }
-
-
-
-                        }
-                        else{
-                                
+                        } else{
                             printf("Este ID no es valido");
                             printf("\nVolviendo al menu...\n\n");
-                                
-                                
+                            break;
                         }
-
-                            
-                        goto inicio;
-
                     }
                     else{
-
                         printf("No es una opcion válida, vuelva a intentar...");
-
                     }
-                    */
                     break;
                 case 5:
-                    mostrarCatalogo(lista, i);
+                    mostrarCatalogo(lista, tamanioArreglo);
                     inventario = fopen("inventario.csv","a");
                     if (inventario == NULL) {
                         printf("No se pudo abrir el archivo para agregar.\n");
@@ -263,7 +267,7 @@ int main(void){
                     }
 
                     getchar();
-                    printf("Ingrese el nombre del producto:\n>>");
+                    printf("Ingrese el nombre del producto que añadirá:\n>>");
                     scanf("%[^\n]", lista[i].marca);
 
                     //Verificamos si el producto existe
@@ -290,10 +294,13 @@ int main(void){
                     fprintf(inventario, "%s,%d,%.2f,%d\n", lista[i].marca, lista[i].stock, lista[i].precio, lista[i].necesidad);
                     fclose(inventario);
                     i++; // Actualiza el tamaño de la lista
+                    tamanioArreglo = i;
                     printf("Producto agregado correctamente.\n");
                     break;
                 case 6:
-                    printf("%f", IVA);
+                    printf("Digite la cedula afiliada:\n>>");
+                    scanf("%I64d", &documentoIdentidad);
+                    verificarAfiliacion(documentoIdentidad);
                     break;
                 case 7:
                     printf("1\n");
