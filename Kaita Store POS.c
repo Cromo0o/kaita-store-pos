@@ -46,7 +46,6 @@ int abrirCaja(int estadoCaja) {
 
 //Detalles de los productos en el catalogo
 struct productos{    
-    
     char marca[30];
     float precio;
     int stock;
@@ -201,7 +200,6 @@ int main(void){
                     printf("1\n");
                     break;
                 case 4:
-                    //Cada que se actualice un producto, actualizar en el archivo inventario.csv
                     mostrarCatalogo(lista, tamanioArreglo);
 
                     printf("\nDesea actualizar algun producto?\n");
@@ -224,7 +222,7 @@ int main(void){
 
                         i -= 1;
 
-                        if ( ( i >= 0 ) && ( i <= 20 ) ){
+                        if ( ( i >= 0 ) && ( i <= tamanioArreglo ) ){
                             printf("El precio actual de %s es de $%.2f, que nuevo precio desea poner?\n", lista[i].marca, lista[i].precio);
                             printf(">>");
                             scanf("%f", &precioActualizar);
@@ -257,6 +255,19 @@ int main(void){
                     else{
                         printf("No es una opcion válida, vuelva a intentar...");
                     }
+
+                    //Cada que se actualice un producto, actualizar en el archivo inventario.csv
+                    inventario = fopen("inventario.csv","w");
+                    if (inventario == NULL) {
+                        printf("No se pudo abrir el archivo para agregar.\n");
+                        break;
+                    }
+
+                    for(i = 0; i < tamanioArreglo; i++){
+                        fprintf(inventario, "%s,%d,%.2f,%d\n", lista[i].marca, lista[i].stock, lista[i].precio, lista[i].necesidad);
+                    }
+
+                    fclose(inventario);
                     break;
                 case 5:
                     mostrarCatalogo(lista, tamanioArreglo);
