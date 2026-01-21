@@ -6,43 +6,65 @@
 //Funcion para abrir la caja o mantenerla cerrada
 //Encargada de dar paso a que funcione todo el programa
 int abrirCaja(int estadoCaja) {
-    
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     int opcion;
 
     if (estadoCaja == 1) {
         
-        printf("\n##  CAJA ABIERTA  ##\n");
-        printf("Muchos exitos en su turno\n");
-        return 1;
-    
-    }
-
-    //Si estadoCaja == 0 pues la caja inicialmente esta cerrada
-    printf("\n");
-    printf("*----------------------*\n");
-    printf("|##   CAJA CERRADA   ##|\n");
-    printf("*----------------------*\n");
-    printf("Digite 1 para abrirla y empezar el turno (0 para cancelar): \n");
-    printf(">>");
- 
-    if (scanf("%d", &opcion) != 1) {
-        
-        printf("Error de entrada.\n\n");
-        return 0;
-
-    }
-
-    if (opcion == 1) {
         printf("\n");
         printf("*----------------------*\n");
         printf("|##   CAJA ABIERTA   ##|\n");
         printf("*----------------------*\n");
         return 1;
     
+    }
+
+    //Si estadoCaja == 0 pues la caja inicialmente esta cerrada
+    printf("\n");
+    SetConsoleTextAttribute(hConsole, 12); // Rojo
+    printf("*----------------------*\n");
+    printf("|##   CAJA CERRADA   ##|\n");
+    printf("*----------------------*\n");
+    SetConsoleTextAttribute(hConsole, 7);  // Color por defecto
+    printf("*----------------------------------------------------------------------*\n");
+    printf("|##   Digite 1 para abrirla y empezar el turno (0 para cancelar):    ##|\n");
+    printf("*----------------------------------------------------------------------*\n");
+    printf(">>");
+ 
+    if (scanf("%d", &opcion) != 1) {
+        SetConsoleTextAttribute(hConsole, 9); // Azul Claro
+        printf("\n---------------------------------------------------------------------------\n");
+        SetConsoleTextAttribute(hConsole, 7);  // Vuelve al color normal           
+        SetConsoleTextAttribute(hConsole, 12); // Rojo
+        printf("*--------------------------*\n");
+        printf("|##   ERROR DE ENTRADA   ##|\n");
+        printf("*--------------------------*\n");
+        SetConsoleTextAttribute(hConsole, 7);  // Color por defecto
+        return 0;
+    }
+
+    if (opcion == 1) {
+        SetConsoleTextAttribute(hConsole, 9); // Azul Claro
+        printf("\n---------------------------------------------------------------------------\n");
+        SetConsoleTextAttribute(hConsole, 7);  // Vuelve al color normal   
+        SetConsoleTextAttribute(hConsole, 10); // Verde
+        printf("*----------------------*\n");
+        printf("|##   CAJA ABIERTA   ##|\n");
+        printf("*----------------------*\n");
+        SetConsoleTextAttribute(hConsole, 7);  // Color por defecto
+        printf("*----------------------------------------------------------------------*\n");
+        printf("|##                Mucha Suerte y Éxitos en su turno!                ##|\n");
+        printf("*----------------------------------------------------------------------*\n");
+        return 1;
+    
     } else {
-        
-        printf("\n##  TURNO NO INICIADO  ##\n");
-        printf("\nLa caja permanece cerrada.\n\n");
+        SetConsoleTextAttribute(hConsole, 9); // Azul Claro
+        printf("\n---------------------------------------------------------------------------\n");
+        SetConsoleTextAttribute(hConsole, 7);  // Vuelve al color normal        
+        printf("*-----------------------------------*\n");
+        printf("|##       TURNO NO INICIADO       ##|\n");
+        printf("|##   LA CAJA PERMANECE CERRADA   ##|\n");
+        printf("*-----------------------------------*\n");
         return 0;
     
     }
@@ -129,6 +151,8 @@ void verificarAfiliacion(long long int CI){
 }
 
 int main(void){
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    
     //Permitimos que se muestren caracteres especiales
     SetConsoleOutputCP(65001);
     int estadoCaja = 0;         // 0 = Cerrada     1 = Abierta
@@ -180,21 +204,24 @@ int main(void){
         }
 
         while(programaActivo){
-            printf("\n-----------------------------------------------------------------------\n");
+            SetConsoleTextAttribute(hConsole, 9); // Azul Claro
+            printf("\n---------------------------------------------------------------------------\n");
+            SetConsoleTextAttribute(hConsole, 7);  // Vuelve al color normal
             printf("\n");
-            printf("*---------------------------------------------*\n");
-            printf("|     Punto de venta express Kaita Store      |\n");
-            printf("*---------------------------------------------*\n");
-            printf("\n");
-            printf("Qué es lo que desea hacer?\n");
-            printf("1. Añadir productos al carrito\n");
-            printf("2. Borrar productos del carrito\n");
-            printf("3. Lista de productos en el carrito\n");
-            printf("4. Actualizar productos del catálogo\n");
-            printf("5. Añadir nuevos productos al catálogo\n");
-            printf("6. Facturar productos\n");
-            printf("7. Entregar reporte general de la caja y cerrar caja\n");
-            printf("8. Cambiar el valor del IVA\n>>");
+            printf("*------------------------------------------------------*\n");
+            printf("|    #@#   Punto de venta express Kaita Store   #@#    |\n");
+            printf("*------------------------------------------------------*\n");
+            printf("|Qué es lo que desea hacer?                            |\n");
+            printf("|(1.) Añadir productos al carrito                      |\n");
+            printf("|(2.) Borrar productos del carrito                     |\n");
+            printf("|(3.) Lista de productos en el carrito                 |\n");
+            printf("|(4.) Actualizar productos del catálogo                |\n");
+            printf("|(5.) Añadir nuevos productos al catálogo              |\n");
+            printf("|(6.) Facturar productos                               |\n");
+            printf("|(7.) Entregar reporte general de la caja y cerrar caja|\n");
+            printf("|(8.) Cambiar el valor del IVA                         |\n");
+            printf("*------------------------------------------------------*\n");
+            printf(">>");
             scanf("%d", &opcionSwitch);
 
             switch (opcionSwitch){
