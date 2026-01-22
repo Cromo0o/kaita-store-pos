@@ -234,7 +234,7 @@ int main(void){
             
             //Añadir productos al carrito de compras
             case 1: 
-
+            
                 mostrarCatalogo(lista);
 
                 //Límite por unidades totales en el carrito

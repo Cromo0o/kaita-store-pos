@@ -1,0 +1,16 @@
+0: Negro
+1: Azul
+2: Verde
+3: Aqua (Cian)
+4: Rojo
+5: Púrpura
+6: Amarillo
+7: Blanco (Gris claro)
+8: Gris (Gris oscuro)
+9: Azul claro
+10: Verde claro
+11: Aqua claro (Cian claro)
+12: Rojo claro
+13: Púrpura claro
+14: Amarillo claro
+15: Blanco brillante

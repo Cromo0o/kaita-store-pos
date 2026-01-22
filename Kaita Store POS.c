@@ -10,13 +10,13 @@ int abrirCaja(int estadoCaja) {
     int opcion;
 
     if (estadoCaja == 1) {
-        
+        SetConsoleTextAttribute(hConsole, 10); // Verde
         printf("\n");
         printf("*----------------------*\n");
         printf("|##   CAJA ABIERTA   ##|\n");
         printf("*----------------------*\n");
+        SetConsoleTextAttribute(hConsole, 7);  // Color por defecto
         return 1;
-    
     }
 
     //Si estadoCaja == 0 pues la caja inicialmente esta cerrada
@@ -31,10 +31,7 @@ int abrirCaja(int estadoCaja) {
     printf("*----------------------------------------------------------------------*\n");
     printf(">>");
  
-    if (scanf("%d", &opcion) != 1) {
-        SetConsoleTextAttribute(hConsole, 9); // Azul Claro
-        printf("\n---------------------------------------------------------------------------\n");
-        SetConsoleTextAttribute(hConsole, 7);  // Vuelve al color normal           
+    if (scanf("%d", &opcion) != 1) {       
         SetConsoleTextAttribute(hConsole, 12); // Rojo
         printf("*--------------------------*\n");
         printf("|##   ERROR DE ENTRADA   ##|\n");
@@ -44,9 +41,6 @@ int abrirCaja(int estadoCaja) {
     }
 
     if (opcion == 1) {
-        SetConsoleTextAttribute(hConsole, 9); // Azul Claro
-        printf("\n---------------------------------------------------------------------------\n");
-        SetConsoleTextAttribute(hConsole, 7);  // Vuelve al color normal   
         SetConsoleTextAttribute(hConsole, 10); // Verde
         printf("*----------------------*\n");
         printf("|##   CAJA ABIERTA   ##|\n");
@@ -58,13 +52,12 @@ int abrirCaja(int estadoCaja) {
         return 1;
     
     } else {
-        SetConsoleTextAttribute(hConsole, 9); // Azul Claro
-        printf("\n---------------------------------------------------------------------------\n");
-        SetConsoleTextAttribute(hConsole, 7);  // Vuelve al color normal        
+        SetConsoleTextAttribute(hConsole, 10);     
         printf("*-----------------------------------*\n");
         printf("|##       TURNO NO INICIADO       ##|\n");
         printf("|##   LA CAJA PERMANECE CERRADA   ##|\n");
         printf("*-----------------------------------*\n");
+        SetConsoleTextAttribute(hConsole, 7);
         return 0;
     
     }
@@ -91,14 +84,14 @@ struct factura{
 
 //Funcion para poder mostrar el catalogo de productos
 void mostrarCatalogo(struct productos lista[], int tamanioArreglo){
-    
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole, 5);
     printf("------------------------------------------------\n");
     printf("| ID |      Producto      |  Precio  |  Stock  |\n");
     printf("------------------------------------------------\n");
+    SetConsoleTextAttribute(hConsole, 7);
     for (int i = 0; i < tamanioArreglo; i++) {
-        
         printf("| %2d | %-18s | $%.2f | %7d |\n", i + 1, lista[i].marca, lista[i].precio, lista[i].stock);
-    
     }
     printf("------------------------------------------------\n");
 }
@@ -162,7 +155,7 @@ int main(void){
     float totalProductosIVA, totalProductosNoIVA, totalVentas, subtotal;
     float acumuladoSinIVA = 0, acumuladoIVA = 0, acumuladoConIVA = 0;
     
-    const int MAX_PRODUCTOS = 10;  
+    
         
     int programaActivo = 1;
     float IVA = 0.15; //IVA estandar, pero que se puede modificar
@@ -204,13 +197,12 @@ int main(void){
         }
 
         while(programaActivo){
-            SetConsoleTextAttribute(hConsole, 9); // Azul Claro
-            printf("\n---------------------------------------------------------------------------\n");
-            SetConsoleTextAttribute(hConsole, 7);  // Vuelve al color normal
             printf("\n");
+            SetConsoleTextAttribute(hConsole, 5);
             printf("*------------------------------------------------------*\n");
             printf("|    #@#   Punto de venta express Kaita Store   #@#    |\n");
             printf("*------------------------------------------------------*\n");
+            SetConsoleTextAttribute(hConsole, 7);
             printf("|Qué es lo que desea hacer?                            |\n");
             printf("|(1.) Añadir productos al carrito                      |\n");
             printf("|(2.) Borrar productos del carrito                     |\n");
@@ -226,7 +218,98 @@ int main(void){
 
             switch (opcionSwitch){
                 case 1:
+                    SetConsoleTextAttribute(hConsole, 13);
+                    printf("\n");
+                    printf("*-------------------------------------*\n");
+                    printf("|##   AÑADIR PRODUCTOS AL CARRITO   ##|\n");
+                    printf("*-------------------------------------*\n");
+                    SetConsoleTextAttribute(hConsole, 7);
                     mostrarCatalogo(lista, tamanioArreglo);
+
+                    //Límite por unidades totales en el carrito
+                    while (1) {
+                        int unidadesTotales = 0;
+                        const int MAX_PRODUCTOS = 10;
+                        
+                        // Calcular el total de unidades en el carrito
+                        for (int k = 0; k < j; k++) {
+                            unidadesTotales += carrito[k].stock;
+                        }
+
+                        if (unidadesTotales >= MAX_PRODUCTOS) {
+                            printf("CARRITO LLENO. No puedes agregar mas unidades.\n");
+                            break;
+                        }
+
+                        printf("Desea agregar un producto?\n");
+                        printf("1. SI\n2. NO\n>>");
+                        scanf("%d", &opcionIf);
+
+                        if (opcionIf == 2){
+                            printf("Volviendo al menu inicial...");
+                            break;
+                        }
+                        else if(opcionIf == 1){
+                            //Pedimos el ID y restamos 1 para concordar con el índice del arreglo
+                            printf("Digite su ID:\n");
+                            printf(">>");
+                            scanf("%d", &i);
+                            i -= 1;
+
+                            // Verificar si hay stock disponible en el catálogo
+                            if (lista[i].stock <= 0) {
+                                printf("No hay stock disponible de '%s' en el catalogo.\n", lista[i].marca);
+                                printf("Elija otro producto o añada más al stock...\n");
+                                continue;
+                            }
+
+                            int cantidadAgregar;
+                            printf("Cuantas unidades de '%s' desea agregar? Stock disponible: %d\n>>", lista[i].marca, lista[i].stock);
+                            scanf("%d", &cantidadAgregar);
+
+                            if (cantidadAgregar <= 0) {
+                                printf("Cantidad invalida.\nVuelva a intentar...");
+                                continue;
+                            }
+                            if (cantidadAgregar > lista[i].stock) {
+                                printf("No hay suficiente stock disponible.\nElija una cantidad entre 1 y %d", lista[i].stock);
+                                continue;
+                            }
+                            if (unidadesTotales + cantidadAgregar > MAX_PRODUCTOS) {
+                                printf("No puedes agregar mas unidades, el carrito excede el maximo permitido.");
+                                continue;
+                            }
+
+                            // Buscar si el producto ya está en el carrito
+                            int encontrado = 0;
+                            for (int k = 0; k < j; k++) {
+                                if (strcmp(carrito[k].marca, lista[i].marca) == 0) {
+                                    carrito[k].stock += cantidadAgregar; //Incrementa el stock en el carrito
+                                    lista[i].stock -= cantidadAgregar;   //Resta el stock en el catálogo
+                                    if (lista[i].stock == 0) {
+                                        printf("Ya no quedan unidades de %s en el catalogo...\n", lista[i].marca);
+                                    }
+                                    encontrado = 1;
+                                    break;
+                                }
+                            }
+
+                            //Sino está en el carrito, se lo añade
+                            if (!encontrado) {
+                                strcpy(carrito[j].marca, lista[i].marca);
+                                carrito[j].precio = lista[i].precio;
+                                carrito[j].necesidad = lista[i].necesidad;
+                                carrito[j].stock = cantidadAgregar;
+                                lista[i].stock -= cantidadAgregar;
+                                if (lista[i].stock == 0) {
+                                    printf("Ya no quedan unidades de %s en el catalogo...\n", lista[i].marca);
+                                }
+                                j++;
+                            }
+                        } else{
+                            printf("No es una opcion valida, regresando al menu inicial...\n");
+                        }
+                    }
                     break;
                 case 2:
                     printf("1\n");
