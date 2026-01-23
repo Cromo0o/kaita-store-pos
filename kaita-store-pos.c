@@ -2,6 +2,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <windows.h>
+#include "pdfgen.h"
 
 //Funcion para abrir la caja o mantenerla cerrada
 //Encargada de dar paso a que funcione todo el programa
@@ -143,6 +144,57 @@ void verificarAfiliacion(long long int CI){
     }
 }
 
+/*
+int crearPDF(){
+    // 1. Información del documento
+    struct pdf_info info = {
+        .creator = "Sistema de Ventas C",
+        .producer = "Proyecto EPN",
+        .title = "Factura de Prueba",
+        .author = "Matthew Llerena",
+        .subject = "Generacion de PDF",
+        .date = "2026-01-22"
+    };
+
+    // 2. Crear el PDF (Tamaño A4)
+    struct pdf_doc *pdf = pdf_create(PDF_A4_WIDTH, PDF_A4_HEIGHT, &info);
+    if (!pdf) {
+        printf("Error al crear el PDF\n");
+        return 1;
+    }
+
+    // 3. Añadir una página
+    pdf_append_page(pdf);
+
+    // 4. Dibujar el Encabezado
+    // El orden correcto para tu versión es: (pdf, página, texto, x, y, tamaño, color)
+    pdf_add_text(pdf, NULL, "FACTURA COMERCIAL", 12, 200, 800, PDF_BLACK);
+    pdf_add_text(pdf, NULL, "Cliente: Matthew Llerena", 12, 50, 750, PDF_BLACK);
+    pdf_add_text(pdf, NULL, "Fecha: 22 de Enero, 2026", 12, 50, 730, PDF_BLACK);
+
+    // 5. Dibujar una línea divisoria (Grosor 2)
+    pdf_add_line(pdf, NULL, 50, 715, 545, 715, 2, PDF_BLACK);
+
+    // 6. Cuerpo de la factura
+    pdf_add_text(pdf, NULL, "Cant.   Descripcion              Precio    Total", 10, 50, 690, PDF_BLACK);
+    pdf_add_line(pdf, NULL, 50, 685, 545, 685, 1, PDF_BLACK);
+    
+    pdf_add_text(pdf, NULL, "1       Mouse Gamer RGB         $25.00    $25.00", 11, 50, 665, PDF_BLACK);
+    pdf_add_text(pdf, NULL, "2       Teclado Mecanico        $45.00    $90.00", 11, 50, 645, PDF_BLACK);
+
+    // 7. Pie de factura
+    pdf_add_line(pdf, NULL, 400, 600, 545, 600, 1, PDF_BLACK);
+    pdf_add_text(pdf, NULL, "TOTAL: $115.00", 12, 400, 580, PDF_BLACK);
+
+    // 8. Guardar y cerrar
+    pdf_save(pdf, "factura_final.pdf");
+    pdf_destroy(pdf);
+
+    printf("¡PDF generado con exito! Revisa el archivo 'factura_final.pdf'\n");
+
+}
+*/
+
 int main(void){
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     
@@ -151,7 +203,8 @@ int main(void){
     int estadoCaja = 0;         // 0 = Cerrada     1 = Abierta
     int i = 0, j = 0;           //j será el numero total de productos
     int opcionSwitch, opcionIf;   
-    
+    int tamanioCarrito;
+
     float totalProductosIVA, totalProductosNoIVA, totalVentas, subtotal;
     float acumuladoSinIVA = 0, acumuladoIVA = 0, acumuladoConIVA = 0;
     
@@ -217,6 +270,7 @@ int main(void){
             scanf("%d", &opcionSwitch);
 
             switch (opcionSwitch){
+                //Añadir productos al carrito de compras
                 case 1:
                     SetConsoleTextAttribute(hConsole, 13);
                     printf("\n");
@@ -237,22 +291,35 @@ int main(void){
                         }
 
                         if (unidadesTotales >= MAX_PRODUCTOS) {
-                            printf("CARRITO LLENO. No puedes agregar mas unidades.\n");
+                            SetConsoleTextAttribute(hConsole, 12);
+                            printf("*--------------------------------------------------*\n");
+                            printf("|  CARRITO LLENO. No puedes agregar mas unidades.  |\n");
+                            printf("*--------------------------------------------------*\n");
+                            SetConsoleTextAttribute(hConsole, 7);
                             break;
                         }
-
-                        printf("Desea agregar un producto?\n");
-                        printf("1. SI\n2. NO\n>>");
+                        
+                        SetConsoleTextAttribute(hConsole, 5);
+                        printf("*---------------------------------*\n");
+                        printf("|   ¿Desea agregar un producto?   |\n");
+                        printf("*---------------------------------*\n");
+                        SetConsoleTextAttribute(hConsole, 7);
+                        printf("|   (1.) SI                       |\n");
+                        printf("|   (2.) NO                       |\n");
+                        printf("*---------------------------------*\n>>");
                         scanf("%d", &opcionIf);
 
                         if (opcionIf == 2){
-                            printf("Volviendo al menu inicial...");
+                            printf("*----------------------------*\n");
+                            printf("|     Volviendo al menu...   |\n");
+                            printf("*----------------------------*\n");
                             break;
                         }
                         else if(opcionIf == 1){
                             //Pedimos el ID y restamos 1 para concordar con el índice del arreglo
-                            printf("Digite su ID:\n");
-                            printf(">>");
+                            printf("*---------------------------------*\n");
+                            printf("|     Digite el ID del producto   |\n");
+                            printf("*---------------------------------*\n>>");
                             scanf("%d", &i);
                             i -= 1;
 
@@ -264,37 +331,48 @@ int main(void){
                             }
 
                             int cantidadAgregar;
-                            printf("Cuantas unidades de '%s' desea agregar? Stock disponible: %d\n>>", lista[i].marca, lista[i].stock);
+                            printf("*---------------------------------------------------------------------------------*\n");
+                            printf("|  Cuantas unidades de '%s' desea agregar? Stock disponible: %d   |\n", lista[i].marca, lista[i].stock);
+                            printf("*---------------------------------------------------------------------------------*\n>>");
                             scanf("%d", &cantidadAgregar);
 
                             if (cantidadAgregar <= 0) {
-                                printf("Cantidad invalida.\nVuelva a intentar...");
+                                 printf("*------------------------*\n");
+                                printf("|    Cantidad invalida    |\n");
+                                printf("|    Vuelva a intentar    |\n");
+                                printf("*-------------------------*\n");
                                 continue;
                             }
                             if (cantidadAgregar > lista[i].stock) {
-                                printf("No hay suficiente stock disponible.\nElija una cantidad entre 1 y %d", lista[i].stock);
+                                printf("No hay suficiente stock disponible.\nElija una cantidad entre 1 y %d\n", lista[i].stock);
                                 continue;
                             }
                             if (unidadesTotales + cantidadAgregar > MAX_PRODUCTOS) {
-                                printf("No puedes agregar mas unidades, el carrito excede el maximo permitido.");
+                                printf("No puedes agregar mas unidades, el carrito excede el maximo permitido.\n");
+                                printf("UNIDADES EN EL CARRITO: %d\n", unidadesTotales);
                                 continue;
                             }
 
                             // Buscar si el producto ya está en el carrito
+                            // No creamos un nuevo elemento, simplemente aumentamos la cantidad del elemento
                             int encontrado = 0;
                             for (int k = 0; k < j; k++) {
                                 if (strcmp(carrito[k].marca, lista[i].marca) == 0) {
                                     carrito[k].stock += cantidadAgregar; //Incrementa el stock en el carrito
                                     lista[i].stock -= cantidadAgregar;   //Resta el stock en el catálogo
                                     if (lista[i].stock == 0) {
-                                        printf("Ya no quedan unidades de %s en el catalogo...\n", lista[i].marca);
+                                        SetConsoleTextAttribute(hConsole, 12);
+                                        printf("*----------------------------------------------------------------------------*\n");
+                                        printf("|   ALERTA!! Ya no quedan unidades de %s en el catalogo...   |\n", lista[i].marca);
+                                        printf("*----------------------------------------------------------------------------*\n");
+                                        SetConsoleTextAttribute(hConsole, 7);
                                     }
                                     encontrado = 1;
                                     break;
                                 }
                             }
 
-                            //Sino está en el carrito, se lo añade
+                            //Si no está en el carrito se lo añade
                             if (!encontrado) {
                                 strcpy(carrito[j].marca, lista[i].marca);
                                 carrito[j].precio = lista[i].precio;
@@ -302,20 +380,79 @@ int main(void){
                                 carrito[j].stock = cantidadAgregar;
                                 lista[i].stock -= cantidadAgregar;
                                 if (lista[i].stock == 0) {
-                                    printf("Ya no quedan unidades de %s en el catalogo...\n", lista[i].marca);
+                                    SetConsoleTextAttribute(hConsole, 12);
+                                    printf("*----------------------------------------------------------------------------*\n");
+                                    printf("|   ALERTA!! Ya no quedan unidades de %s en el catalogo...   |\n", lista[i].marca);
+                                    printf("*----------------------------------------------------------------------------*\n");
+                                    SetConsoleTextAttribute(hConsole, 7);
                                 }
                                 j++;
                             }
                         } else{
-                            printf("No es una opcion valida, regresando al menu inicial...\n");
+                            printf("*----------------------------------------------------------*");
+                            printf("|  No es una opcion valida, regresando al menu inicial...  |\n");
+                            printf("*----------------------------------------------------------*");
                         }
                     }
+
                     break;
                 case 2:
-                    printf("1\n");
+                    tamanioCarrito = j;
+                    mostrarCarrito(carrito, tamanioCarrito);
+                    
+                    printf("\nDesea borrar algun producto?\n");
+                    printf("1 -> SI\n");
+                    printf("2 -> NO\n");
+                    printf(">>");
+                    scanf("%d", &opcionIf);
+
+                    if (opcionIf == 2){
+                        printf("\n");
+                        printf("*----------------------------*\n");
+                        printf("|     Volviendo al menu...   |\n");
+                        printf("*----------------------------*\n\n");
+                        break;
+                    } else if(opcionIf == 1){
+                        int unidadesBorrar;
+                        printf("\nDigite el ID del producto que deseaa borrar: \n");
+                        printf(">>");
+                        scanf("%d", &i);
+                        i -= 1;
+
+                        if (( i >= 0 ) && ( i <= j )){
+                            printf("Cuantas unidades de %s desea borrar, actualmente tiene %d\n", carrito[i].marca, carrito[i].stock);
+                            printf(">>");
+                            scanf("%d", &unidadesBorrar);
+
+                            if (unidadesBorrar <= carrito[i].stock){
+                                lista[i].stock += unidadesBorrar; //Regresamos los items al inventario
+                                carrito[i].stock -= unidadesBorrar; //Borramos la cantidad deseada del carrito
+                                
+                                //En caso de que el stock se haga 0, borra el producto de la lista del carrito
+                                if (carrito[i].stock == 0){
+                                    for (int k = i; k < j - 1; k++){
+                                        carrito[k] = carrito [k + 1];
+                                    }
+                                    j--;
+                                }
+                                printf("\nCarrito actualizado correctamente\n");
+                                printf("\nVolviendo al menu...\n\n");
+                            } else{
+                                printf("No se pueden borrar mas unidades de las que hay");
+                                printf("\nVolviendo al menu...\n\n");
+                            }
+                        } else{
+                            printf("Este ID no es valido");
+                            printf("\nVolviendo al menu...\n\n");
+                            break;
+                        }
+                    } else{
+                        printf("No es una opcion válida, vuelva a intentar...");
+                    }
                     break;
                 case 3:
-                    printf("1\n");
+                    mostrarCarrito(carrito, tamanioCarrito);
+                    printf("\nVolviendo al menu...\n\n");
                     break;
                 case 4:
                     mostrarCatalogo(lista, tamanioArreglo);
@@ -327,7 +464,10 @@ int main(void){
                     scanf("%d", &opcionIf);
 
                     if (opcionIf == 2){
-                        printf("\nVolviendo al menu...\n\n");
+                        printf("\n");
+                        printf("*----------------------------*\n");
+                        printf("|     Volviendo al menu...   |\n");
+                        printf("*----------------------------*\n\n");
                         break;
                     }
                     else if(opcionIf == 1){
