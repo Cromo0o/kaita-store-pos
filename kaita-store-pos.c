@@ -201,7 +201,7 @@ int main(void){
     //Permitimos que se muestren caracteres especiales
     SetConsoleOutputCP(65001);
     int estadoCaja = 0;         // 0 = Cerrada     1 = Abierta
-    int i = 0, j = 0;           //j será el numero total de productos
+    int i = 0, j = 0;//Numero total de productos en el carrito
     int opcionSwitch, opcionIf;   
     int tamanioCarrito;
 
@@ -394,10 +394,10 @@ int main(void){
                             printf("*----------------------------------------------------------*");
                         }
                     }
-
-                    break;
-                case 2:
                     tamanioCarrito = j;
+                    break;
+                //Borrar productos del carrito
+                case 2:
                     mostrarCarrito(carrito, tamanioCarrito);
                     
                     printf("\nDesea borrar algun producto?\n");
@@ -450,10 +450,12 @@ int main(void){
                         printf("No es una opcion válida, vuelva a intentar...");
                     }
                     break;
+                //Lista de productos en el carrito
                 case 3:
                     mostrarCarrito(carrito, tamanioCarrito);
                     printf("\nVolviendo al menu...\n\n");
                     break;
+                //Actualizar productos del catálogo
                 case 4:
                     mostrarCatalogo(lista, tamanioArreglo);
 
@@ -527,6 +529,7 @@ int main(void){
 
                     fclose(inventario);
                     break;
+                //Añadir nuevos productos al catálogo
                 case 5:
                     mostrarCatalogo(lista, tamanioArreglo);
                     inventario = fopen("inventario.csv","a");
@@ -569,17 +572,14 @@ int main(void){
                     printf("*----------------------------------*\n");
                     printf("---------------------------------------------------------------\n");
                     break;
+                //Facturar productos
                 case 6:
                     printf("Digite la cedula afiliada:\n>>");
                     scanf("%I64d", &documentoIdentidad);
                     verificarAfiliacion(documentoIdentidad);
                     break;
+                //Cambiar el valor del IVA
                 case 7:
-                    printf("1\n");
-                    programaActivo = 0;
-                    break;
-                
-                case 8: {
                     //Variable temporal para tratar con el valor ingresado
                     //y con el valor que se usará en el programa
                     int IVAtemp;
@@ -595,6 +595,11 @@ int main(void){
                     } else{
                         printf("El valor ingresado no es valido, vuelta a intentar.\n");
                     }
+                    break;
+                //Entregar reporte general de la caja y cerrarla
+                case 8: {
+                    printf("1\n");
+                    programaActivo = 0;
                     break;
                 }
                 default:
