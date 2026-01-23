@@ -63,7 +63,7 @@ int abrirCaja(int estadoCaja) {
     
     }
 }
-
+    
 //Detalles de los productos en el catalogo
 struct productos{    
     char marca[30];
@@ -250,6 +250,9 @@ int main(void){
                     printf("Gracias por usar nuestro cajero.\n");
                     return 0;
                 }
+            } else {
+                // Si la caja se abrió, activar el programa
+                programaActivo = 1;
             }
         }
 
