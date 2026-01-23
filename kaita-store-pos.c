@@ -340,7 +340,7 @@ int main(void){
                                  printf("*------------------------*\n");
                                 printf("|    Cantidad invalida    |\n");
                                 printf("|    Vuelva a intentar    |\n");
-                                printf("*------------------------*\n");
+                                printf("*-------------------------*\n");
                                 continue;
                             }
                             if (cantidadAgregar > lista[i].stock) {
