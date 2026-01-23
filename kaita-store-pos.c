@@ -337,7 +337,7 @@ int main(void){
                             scanf("%d", &cantidadAgregar);
 
                             if (cantidadAgregar <= 0) {
-                                 printf("*------------------------*\n");
+                                printf("*-------------------------*\n");
                                 printf("|    Cantidad invalida    |\n");
                                 printf("|    Vuelva a intentar    |\n");
                                 printf("*-------------------------*\n");
