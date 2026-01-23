@@ -664,7 +664,8 @@ int main(void){
                     printf("\n\nGracias por usar nuestro punto de venta :)\n\n");
                     estadoCaja = 0;
                     programaActivo = 0;
-                    break;
+                    // Al cerrar la caja, volver al bucle principal para preguntar si se desea abrirla de nuevo
+                    continue;
                 default:
                     printf("Opcion inválida :(\n");
                     break;
