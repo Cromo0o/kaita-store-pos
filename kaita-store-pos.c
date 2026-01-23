@@ -145,6 +145,10 @@ void verificarAfiliacion(long long int CI){
 }
 
 /*
+printf("Digite la cedula afiliada:\n>>");
+                    scanf("%I64d", &documentoIdentidad);
+                    verificarAfiliacion(documentoIdentidad);
+                    break;
 int crearPDF(){
     // 1. Información del documento
     struct pdf_info info = {
@@ -212,7 +216,7 @@ int main(void){
         
     int programaActivo = 1;
     float IVA = 0.15; //IVA estandar, pero que se puede modificar
-    long long int documentoIdentidad;
+    //long long int documentoIdentidad;
     int tamanioArreglo;
 
     struct productos lista[100];
@@ -263,8 +267,8 @@ int main(void){
             printf("|(4.) Actualizar productos del catálogo                |\n");
             printf("|(5.) Añadir nuevos productos al catálogo              |\n");
             printf("|(6.) Facturar productos                               |\n");
-            printf("|(7.) Entregar reporte general de la caja y cerrar caja|\n");
-            printf("|(8.) Cambiar el valor del IVA                         |\n");
+            printf("|(7.) Cambiar el valor del IVA                         |\n");
+            printf("|(8.) Entregar reporte general de la caja y cerrar caja|\n");
             printf("*------------------------------------------------------*\n");
             printf(">>");
             scanf("%d", &opcionSwitch);
@@ -574,12 +578,53 @@ int main(void){
                     break;
                 //Facturar productos
                 case 6:
-                    printf("Digite la cedula afiliada:\n>>");
-                    scanf("%I64d", &documentoIdentidad);
-                    verificarAfiliacion(documentoIdentidad);
+                    mostrarCarrito(carrito, tamanioCarrito);    
+                    totalProductosIVA = 0;      //Solo la suma del IVA
+                    totalProductosNoIVA = 0;    //Solo la suma de los precios sin IVA
+                    totalVentas = 0;
+                    subtotal = 0;
+
+                    for ( i = 0; i < j; i++){
+                        //Calculamos el subtotal de la compra (sin IVA)
+                        totalProductosNoIVA = (carrito[i].stock * carrito[i].precio);
+                        subtotal += totalProductosNoIVA;
+                    }
+                
+                    for ( i = 0; i < j; i++){
+                        if (carrito[i].necesidad == 1){
+                            //Calculamos unicamente el IVA de cada producto ingresado
+                            carrito[i].iva = (carrito[i].stock * carrito[i].precio) * IVA;
+                            totalProductosIVA += carrito[i].iva;
+                        }
+                    }
+
+                    totalVentas = subtotal + totalProductosIVA;
+                    acumuladoSinIVA += subtotal;
+                    acumuladoIVA += totalProductosIVA;
+                    acumuladoConIVA += totalVentas;     
+                
+                    printf("*---------------------------------------------*\n");
+                    printf("*|           FACTURA - KAITA STORE            |*\n");
+                    printf("*---------------------------------------------*\n");
+                    printf("\n##  SUBTOTAL: %.2f\n", subtotal);
+                    printf("##  IVA: %.2f\n", totalProductosIVA);
+                    printf("##  VALOR TOTAL: %.2f\n\n\n", totalVentas);
+
+                    //Finalizada la venta borramos el carrito actual para que se pueda generar una nueva venta
+                
+                    for (int k = 0; k < j; k++) {
+                        carrito[k].stock = 0;
+                        carrito[k].precio = 0;
+                        carrito[k].necesidad = 0;
+                        strcpy(carrito[k].marca, "");
+                    }
+                
+                    j = 0;
+
+                    printf("\n## Carrito vaciado. Listo para la siguiente venta. ##\n");
                     break;
                 //Cambiar el valor del IVA
-                case 7:
+                case 7: {
                     //Variable temporal para tratar con el valor ingresado
                     //y con el valor que se usará en el programa
                     int IVAtemp;
@@ -596,12 +641,30 @@ int main(void){
                         printf("El valor ingresado no es valido, vuelta a intentar.\n");
                     }
                     break;
-                //Entregar reporte general de la caja y cerrarla
-                case 8: {
-                    printf("1\n");
+                }
+                //Entregar reporte general de la caja y cerrarla ############
+                case 8:
+                    //Mostramos una alerta en caso de haber menos de 5 productos en el catalogo
+                    for ( i = 0; i < 20; i++){
+                    
+                        if (lista[i].stock <= 5){
+                        
+                            printf("\nAlerta!!.. Stock bajo del producto '%s', quedan %d unidades\n", lista[i].marca, lista[i].stock);
+                        
+                        }
+                    }
+                
+                    printf("\n--- REPORTE TOTAL DE VENTAS DEL TURNO ---\n");
+                    printf("Total ventas sin IVA: $%.2f\n", acumuladoSinIVA);
+                    printf("Total ventas con IVA: $%.2f\n", acumuladoConIVA);
+                    printf("Total IVA recaudado: $%.2f\n", acumuladoIVA);
+                    printf("Total recaudado en el turno: $%.2f\n", acumuladoConIVA);
+
+
+                    printf("\n\nGracias por usar nuestro punto de venta :)\n\n");
+                    estadoCaja = 0;
                     programaActivo = 0;
                     break;
-                }
                 default:
                     printf("Opcion inválida :(\n");
                     break;
