@@ -576,7 +576,7 @@ int main(void){
                     printf("*----------------------------------*\n");
                     printf("---------------------------------------------------------------\n");
                     break;
-                //Facturar productos
+                //Facturar productos, Creacion de factura en PDF
                 case 6:
                     totalProductosIVA = 0;      //Solo la suma del IVA
                     totalProductosNoIVA = 0;    //Solo la suma de los precios sin IVA
@@ -624,6 +624,20 @@ int main(void){
                     j = 0;
                     
                     printf("\n## Carrito vaciado. Listo para la siguiente venta. ##\n");
+                    
+                    //Despues de confirmar la venta
+                    //Actualizamos el inventario.csv con los productos que quedan
+                    inventario = fopen("inventario.csv","w");
+                    if (inventario == NULL) {
+                        printf("No se pudo abrir el archivo para agregar.\n");
+                        break;
+                    }
+
+                    for(i = 0; i < tamanioArreglo; i++){
+                        fprintf(inventario, "%s,%d,%.2f,%d\n", lista[i].marca, lista[i].stock, lista[i].precio, lista[i].necesidad);
+                    }
+
+                    fclose(inventario);
                     break;
                 //Cambiar el valor del IVA
                 case 7: {
