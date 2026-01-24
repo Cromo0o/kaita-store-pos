@@ -2,7 +2,16 @@
 #include <string.h>
 #include <unistd.h>
 #include <windows.h>
+#include <time.h>
 #include "pdfgen.h"
+
+void mostrarFechaFacturacion(){
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+    printf("#### FECHA DE FACTURACIÓN: %02d/%02d/%04d %02d:%02d:%02d\n",
+    tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900,
+    tm.tm_hour, tm.tm_min, tm.tm_sec);
+}
 
 //Funcion para abrir la caja o mantenerla cerrada
 //Encargada de dar paso a que funcione todo el programa
@@ -211,7 +220,6 @@ int main(void){
 
     float totalProductosIVA, totalProductosNoIVA, totalVentas, subtotal;
     float acumuladoSinIVA = 0, acumuladoIVA = 0, acumuladoConIVA = 0;
-    
     
         
     int programaActivo = 1;
@@ -611,7 +619,9 @@ int main(void){
                     printf("*---------------------------------------------*\n");
                     printf("\n##  SUBTOTAL: %.2f\n", subtotal);
                     printf("##  IVA: %.2f\n", totalProductosIVA);
-                    printf("##  VALOR TOTAL: %.2f\n\n\n", totalVentas);
+                    printf("##  VALOR TOTAL: %.2f", totalVentas);
+                    mostrarFechaFacturacion();
+                    printf("\n\n\n");
 
                     //Finalizada la venta borramos el carrito actual para que se pueda generar una nueva venta
                 
