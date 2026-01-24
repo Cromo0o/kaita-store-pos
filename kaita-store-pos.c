@@ -35,6 +35,28 @@ void ordenarInventarioA_Z(struct productos lista[], int tamanioArreglo){
     }
 }
 
+//Funcion para buscar elemento en la lista usando Binary Search
+int buscarProducto(struct productos lista[], int tamanioArreglo, int i){
+    char n[40];
+    strcpy(n, lista[i].marca);
+
+    int encontrado = 0;
+    int inferior = 0;
+    int superior = tamanioArreglo - 1;
+
+    while (inferior <= superior && encontrado == 0){
+        int mitad = (inferior + superior)/2;
+        if(strcmp(lista[mitad].marca, n) == 0){
+            encontrado = 1;
+        } else if(strcmp(lista[mitad].marca, n) < 0){
+            inferior = mitad + 1;
+        } else{
+            superior = mitad - 1;
+        }   
+    }
+    return encontrado;  //Devuelve el valor de 1 si encontró el elemento
+}
+
 //Funcion para abrir la caja o mantenerla cerrada
 //Encargada de dar paso a que funcione todo el programa
 int abrirCaja(int estadoCaja) {
@@ -569,14 +591,12 @@ int main(void){
                     printf("Ingrese el nombre del producto que añadirá:\n>>");
                     scanf("%[^\n]", lista[i].marca);
 
-                    //Verificamos si el producto existe
-                    int repetido = 0;
-                    for (int j = 0; j < i; j++) {
-                        if (strcmp(lista[i].marca, lista[j].marca) == 0) {
-                            repetido = 1;
-                            break;
-                        }
-                    }
+                    //Verificamos si el producto existe en el catalogo
+                    //APLICAR BUSQUEDA BINARIA
+                    
+                    
+                    int repetido = buscarProducto(lista, tamanioArreglo, i);;
+                    
                     if (repetido) {
                         printf("Este producto ya existe, no se puede agregar.\n");
                         fclose(inventario);
