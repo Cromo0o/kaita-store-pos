@@ -121,38 +121,6 @@ void mostrarCarrito(struct factura carrito[], int j){
         printf("---------------------------------------------------\n");
 }
 
-//Funcion para verificar si es que el cliente está afiliado a la tienda
-void verificarAfiliacion(long long int CI){
-
-    int cantidadDocumentos = 300;
-    long long int arr[500];
-    int afiliado = 0;
-    char nombre[100];
-
-    FILE * afiliacion;
-    afiliacion = fopen("afiliacion.csv","r");
-
-    if(afiliacion != NULL){
-        for (int i = 0; i < cantidadDocumentos; i++){
-            fscanf(afiliacion, "%I64d,%[^\n]\n", &arr[i], nombre);
-            if(CI == arr[i]){
-                afiliado = 1;
-                break;
-            }
-        }
-        
-        if(afiliado == 1){
-            printf("El cliente %s está afiliado", nombre);
-        }
-        else{
-            printf("El cliente no está afiliado");
-        }
-        fclose(afiliacion);
-    } else{
-        printf("No se pudo abrir el archivo");
-    }
-}
-
 /*
 printf("Digite la cedula afiliada:\n>>");
                     scanf("%I64d", &documentoIdentidad);
@@ -224,7 +192,6 @@ int main(void){
         
     int programaActivo = 1;
     float IVA = 0.15; //IVA estandar, pero que se puede modificar
-    //long long int documentoIdentidad;
     int tamanioArreglo;
 
     struct productos lista[100];
@@ -594,6 +561,14 @@ int main(void){
                     totalProductosNoIVA = 0;    //Solo la suma de los precios sin IVA
                     totalVentas = 0;
                     subtotal = 0;
+
+                    char cliente[100];
+                    long long int dni;
+                    printf("Digite el nombre del cliente:\n>>");
+                    fgets(cliente, sizeof(cliente), stdin);
+                    printf("Digite el DNI del cliente: ");
+                    scanf("%I64d", &dni);
+
 
                     for ( i = 0; i < j; i++){
                         //Calculamos el subtotal de la compra (sin IVA)
