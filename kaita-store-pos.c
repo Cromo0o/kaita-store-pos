@@ -119,7 +119,6 @@ int abrirCaja(int estadoCaja) {
     
 //Detalles de los productos para registrar en el carrito
 struct factura{
-
     char marca[30];
     float precio;
     int stock;
