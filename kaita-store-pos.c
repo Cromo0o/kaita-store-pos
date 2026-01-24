@@ -134,7 +134,6 @@ void mostrarCarrito(struct factura carrito[], int j){
         printf("---------------------------------------------------\n");
 }
 
-/*
 int crearPDF(struct factura carrito[], int j, char cliente[], long long int dni, float subtotal, float totalProductosIVA, float totalVentas){
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     // 1. Información del documento
@@ -219,7 +218,6 @@ int crearPDF(struct factura carrito[], int j, char cliente[], long long int dni,
     SetConsoleTextAttribute(hConsole, 7);
     return 0;
 }
-*/
 
 int main(void){
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -600,6 +598,19 @@ int main(void){
                     printf("| Producto agregado correctamente. |\n");
                     printf("*----------------------------------*\n");
                     printf("---------------------------------------------------------------\n");
+                    
+                    ordenarInventarioA_Z(lista, tamanioArreglo);
+                    //Volver a sobreescribir en el archivo con el nuevo elemento ya ordenado
+                    inventario = fopen("inventario.csv","w");
+                    if (inventario == NULL) {
+                        printf("No se pudo abrir el archivo para agregar.\n");
+                        break;
+                    }
+
+                    for(i = 0; i < tamanioArreglo; i++){
+                        fprintf(inventario, "%s,%d,%.2f,%d\n", lista[i].marca, lista[i].stock, lista[i].precio, lista[i].necesidad);
+                    }
+                    fclose(inventario);
                     break;
                 //Facturar productos, Creacion de factura en PDF
                 case 6:
@@ -636,7 +647,7 @@ int main(void){
                     acumuladoIVA += totalProductosIVA;
                     acumuladoConIVA += totalVentas;     
 
-                    //crearPDF(carrito, j, cliente, dni, subtotal, totalProductosIVA, totalVentas);
+                    crearPDF(carrito, j, cliente, dni, subtotal, totalProductosIVA, totalVentas);
 
                     //Finalizada la venta borramos el carrito actual para que se pueda generar una nueva venta
                 
