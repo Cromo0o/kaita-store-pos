@@ -74,5 +74,5 @@ To optimize performance and meet academic standards, the system utilizes:
 
 ---
 <div align="center">
-    <sub>Desarrollado para el proyecto final de semestre - 2024/2025</sub>
+    <sub>Developed for the final semester project - 2025/2026</sub>
 </div>
