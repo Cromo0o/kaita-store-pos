@@ -9,7 +9,7 @@
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
 <p align="center">
-  <b>Un sistema de Punto de Venta eficiente desarrollado en C, enfocado en algoritmos de ordenamiento, búsqueda y persistencia de datos.</b>
+  <b>An efficient Point of Sale system developed in C, focused on sorting, searching, and data persistence algorithms.</b>
 </p>
 
 </div>
