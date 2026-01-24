@@ -5,14 +5,6 @@
 #include <time.h>
 #include "pdfgen.h"
 
-void mostrarFechaFacturacion(){
-    time_t t = time(NULL);
-    struct tm tm = *localtime(&t);
-    printf("#### FECHA DE FACTURACIÓN: %02d/%02d/%04d %02d:%02d:%02d\n",
-    tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900,
-    tm.tm_hour, tm.tm_min, tm.tm_sec);
-}
-
 //Funcion para abrir la caja o mantenerla cerrada
 //Encargada de dar paso a que funcione todo el programa
 int abrirCaja(int estadoCaja) {
@@ -121,20 +113,16 @@ void mostrarCarrito(struct factura carrito[], int j){
         printf("---------------------------------------------------\n");
 }
 
-/*
-printf("Digite la cedula afiliada:\n>>");
-                    scanf("%I64d", &documentoIdentidad);
-                    verificarAfiliacion(documentoIdentidad);
-                    break;
-int crearPDF(){
+int crearPDF(struct factura carrito[], int j, char cliente[], long long int dni, float subtotal, float totalProductosIVA, float totalVentas){
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     // 1. Información del documento
     struct pdf_info info = {
-        .creator = "Sistema de Ventas C",
+        .creator = "Kaita Store",
         .producer = "Proyecto EPN",
-        .title = "Factura de Prueba",
-        .author = "Matthew Llerena",
+        .title = "Factura cliente",
+        .author = "Matthew Llerena & Kaya Alfusi",
         .subject = "Generacion de PDF",
-        .date = "2026-01-22"
+        .date = "2026-01-23"
     };
 
     // 2. Crear el PDF (Tamaño A4)
@@ -149,32 +137,66 @@ int crearPDF(){
 
     // 4. Dibujar el Encabezado
     // El orden correcto para tu versión es: (pdf, página, texto, x, y, tamaño, color)
-    pdf_add_text(pdf, NULL, "FACTURA COMERCIAL", 12, 200, 800, PDF_BLACK);
-    pdf_add_text(pdf, NULL, "Cliente: Matthew Llerena", 12, 50, 750, PDF_BLACK);
-    pdf_add_text(pdf, NULL, "Fecha: 22 de Enero, 2026", 12, 50, 730, PDF_BLACK);
+    pdf_add_text(pdf, NULL, "KAITA STORE RECEIPT", 12, 200, 800, PDF_BLACK);
+    
+    char lineaCliente[120];
+    sprintf(lineaCliente, "Cliente: %s", cliente);
+    pdf_add_text(pdf, NULL, lineaCliente, 12, 50, 750, PDF_BLACK);
+    
+    char lineaDni[50];
+    sprintf(lineaDni, "Cédula: %I64d", dni);
+    pdf_add_text(pdf, NULL, lineaDni, 12, 50, 730, PDF_BLACK);
+
+    char fecha[40];
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+    strftime(fecha, sizeof(fecha), "Fecha: %d/%m/%Y  Hora: %H:%M", &tm);
+    pdf_add_text(pdf, NULL, fecha, 12, 50, 710, PDF_BLACK);
 
     // 5. Dibujar una línea divisoria (Grosor 2)
-    pdf_add_line(pdf, NULL, 50, 715, 545, 715, 2, PDF_BLACK);
+    pdf_add_line(pdf, NULL, 50, 700, 545, 700, 2, PDF_BLACK);
 
     // 6. Cuerpo de la factura
-    pdf_add_text(pdf, NULL, "Cant.   Descripcion              Precio    Total", 10, 50, 690, PDF_BLACK);
+    pdf_add_text(pdf, NULL, "Cant.  Producto                Uni.Precio   Subtotal", 10, 50, 690, PDF_BLACK);
     pdf_add_line(pdf, NULL, 50, 685, 545, 685, 1, PDF_BLACK);
     
-    pdf_add_text(pdf, NULL, "1       Mouse Gamer RGB         $25.00    $25.00", 11, 50, 665, PDF_BLACK);
-    pdf_add_text(pdf, NULL, "2       Teclado Mecanico        $45.00    $90.00", 11, 50, 645, PDF_BLACK);
+    char lineaProductos[300];
+    int y = 665;
+    for (int i = 0; i < j; i++){
+        sprintf(lineaProductos, "%-6d %-22s %11.2f %10.2f", carrito[i].stock, carrito[i].marca, carrito[i].precio, carrito[i].stock * carrito[i].precio);
+        pdf_add_text(pdf, NULL, lineaProductos, 11, 50, y, PDF_BLACK);
+        y -= 20;
+    }
+    // Agregar una línea divisoria de grosor 2 justo después del último producto
+    pdf_add_line(pdf, NULL, 50, y + 10, 545, y + 10, 2, PDF_BLACK);
 
     // 7. Pie de factura
-    pdf_add_line(pdf, NULL, 400, 600, 545, 600, 1, PDF_BLACK);
-    pdf_add_text(pdf, NULL, "TOTAL: $115.00", 12, 400, 580, PDF_BLACK);
+    int pie_y = y - 10; 
+    char lineaSubtotal[50];
+    char lineaIVA[50];
+    char lineaTotal[50];
+    sprintf(lineaSubtotal, "Subtotal: $%.2f", subtotal);
+    sprintf(lineaIVA,     "IVA:      $%.2f", totalProductosIVA);
+    sprintf(lineaTotal,   "Total:    $%.2f", totalVentas);
+
+    pdf_add_text(pdf, NULL, lineaSubtotal, 12, 400, pie_y, PDF_BLACK);
+    pdf_add_text(pdf, NULL, lineaIVA,     12, 400, pie_y - 20, PDF_BLACK);
+    pdf_add_text(pdf, NULL, lineaTotal,   12, 400, pie_y - 40, PDF_BLACK);
 
     // 8. Guardar y cerrar
-    pdf_save(pdf, "factura_final.pdf");
+    static int num = 0;
+    char lineaGuardar[20];
+    sprintf(lineaGuardar, "Facturas/factura%d.pdf", num++);
+    pdf_save(pdf, lineaGuardar);
     pdf_destroy(pdf);
-
-    printf("¡PDF generado con exito! Revisa el archivo 'factura_final.pdf'\n");
-
+    
+    SetConsoleTextAttribute(hConsole, 10);
+    printf("*--------------------------*\n");
+    printf("| ¡PDF generado con exito! |\n");
+    printf("*--------------------------*\n");
+    SetConsoleTextAttribute(hConsole, 7);
+    return 0;
 }
-*/
 
 int main(void){
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -244,7 +266,7 @@ int main(void){
             printf("|(3.) Lista de productos en el carrito                 |\n");
             printf("|(4.) Actualizar productos del catálogo                |\n");
             printf("|(5.) Añadir nuevos productos al catálogo              |\n");
-            printf("|(6.) Facturar productos                               |\n");
+            printf("|(6.) Exportar factura en PDF                          |\n");
             printf("|(7.) Cambiar el valor del IVA                         |\n");
             printf("|(8.) Entregar reporte general de la caja y cerrar caja|\n");
             printf("*------------------------------------------------------*\n");
@@ -556,7 +578,6 @@ int main(void){
                     break;
                 //Facturar productos
                 case 6:
-                    mostrarCarrito(carrito, tamanioCarrito);    
                     totalProductosIVA = 0;      //Solo la suma del IVA
                     totalProductosNoIVA = 0;    //Solo la suma de los precios sin IVA
                     totalVentas = 0;
@@ -564,11 +585,12 @@ int main(void){
 
                     char cliente[100];
                     long long int dni;
+                    
                     printf("Digite el nombre del cliente:\n>>");
+                    getchar();
                     fgets(cliente, sizeof(cliente), stdin);
-                    printf("Digite el DNI del cliente: ");
+                    printf("Digite el DNI del cliente:\n>>");
                     scanf("%I64d", &dni);
-
 
                     for ( i = 0; i < j; i++){
                         //Calculamos el subtotal de la compra (sin IVA)
@@ -588,15 +610,8 @@ int main(void){
                     acumuladoSinIVA += subtotal;
                     acumuladoIVA += totalProductosIVA;
                     acumuladoConIVA += totalVentas;     
-                
-                    printf("*---------------------------------------------*\n");
-                    printf("*|           FACTURA - KAITA STORE            |*\n");
-                    printf("*---------------------------------------------*\n");
-                    printf("\n##  SUBTOTAL: %.2f\n", subtotal);
-                    printf("##  IVA: %.2f\n", totalProductosIVA);
-                    printf("##  VALOR TOTAL: %.2f", totalVentas);
-                    mostrarFechaFacturacion();
-                    printf("\n\n\n");
+
+                    crearPDF(carrito, j, cliente, dni, subtotal, totalProductosIVA, totalVentas);
 
                     //Finalizada la venta borramos el carrito actual para que se pueda generar una nueva venta
                 
@@ -606,9 +621,8 @@ int main(void){
                         carrito[k].necesidad = 0;
                         strcpy(carrito[k].marca, "");
                     }
-                
                     j = 0;
-
+                    
                     printf("\n## Carrito vaciado. Listo para la siguiente venta. ##\n");
                     break;
                 //Cambiar el valor del IVA
