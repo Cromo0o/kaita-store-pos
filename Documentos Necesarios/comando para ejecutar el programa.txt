@@ -1,0 +1,1 @@
+gcc kaita-store-pos.c pdfgen.c -o kaita-store-pos.exe ; .\kaita-store-pos.exe

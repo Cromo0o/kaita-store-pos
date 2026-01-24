@@ -1,2 +1,0 @@
-gcc kaita-store-pos.c pdfgen.c -o kaita-store-pos.exe ; .\kaita-store-pos.exe
-gcc test_factura.c pdfgen.c -o test_factura.exe ; .\test_factura.exe
