@@ -36,7 +36,7 @@ To optimize performance and meet academic standards, the system utilizes the fol
 - **Operating system used**: Windows 11.
 
 ## 📚 Academic Details
-- University: Escuela Politécnica Nacional
-- Subject: Programming I.
-- Career: Data Science and AI Engineering.
-- Developers: Matthew Llerena Montoya, Kaya Alfusi.
+- **University**: Escuela Politécnica Nacional
+- **Subject**: Programming I.
+- **Career**: Data Science and AI Engineering.
+- **Developers**: Matthew Llerena Montoya, Kaya Alfusi.
