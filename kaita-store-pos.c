@@ -5,6 +5,36 @@
 #include <time.h>
 #include "pdfgen.h"
 
+//Detalles de los productos en el catalogo
+struct productos{    
+    char marca[30];
+    float precio;
+    int stock;
+    int necesidad;
+    float iva;
+};
+
+//Funcion para ordenar el inventario de A a la Z usando Selection Sort
+void ordenarInventarioA_Z(struct productos lista[], int tamanioArreglo){
+    //Si strcmp devuelve un valor mayor a 0, el primer nombre va después en el abecedario que el segundo
+    //Si devuelve 0 son iguales
+    //Si strcmp devuelve un valor menor a 0, el primer nombre va antes
+    for (int i = 0; i < tamanioArreglo - 1; i++){
+        int min = i;    //Posición del valor que va antes
+        for (int j = i+1; j < tamanioArreglo; j++){
+            if(strcmp(lista[j].marca, lista[min].marca) < 0 ){
+                min = j;
+            }
+        }
+        if (min != i){
+            //Intercambio toda la estructura del producto para ordenar precio, stock y demás
+            struct productos temp = lista[i];
+            lista[i] = lista[min];
+            lista[min] = temp;
+        }
+    }
+}
+
 //Funcion para abrir la caja o mantenerla cerrada
 //Encargada de dar paso a que funcione todo el programa
 int abrirCaja(int estadoCaja) {
@@ -65,15 +95,6 @@ int abrirCaja(int estadoCaja) {
     }
 }
     
-//Detalles de los productos en el catalogo
-struct productos{    
-    char marca[30];
-    float precio;
-    int stock;
-    int necesidad;
-    float iva;
-};
-
 //Detalles de los productos para registrar en el carrito
 struct factura{
 
@@ -113,6 +134,7 @@ void mostrarCarrito(struct factura carrito[], int j){
         printf("---------------------------------------------------\n");
 }
 
+/*
 int crearPDF(struct factura carrito[], int j, char cliente[], long long int dni, float subtotal, float totalProductosIVA, float totalVentas){
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     // 1. Información del documento
@@ -197,6 +219,7 @@ int crearPDF(struct factura carrito[], int j, char cliente[], long long int dni,
     SetConsoleTextAttribute(hConsole, 7);
     return 0;
 }
+*/
 
 int main(void){
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -234,6 +257,8 @@ int main(void){
     } else{
         printf("NO se pudo abrir el archivo");
     }
+
+    ordenarInventarioA_Z(lista, tamanioArreglo);
 
     //Apertura y cierre de caja
     while (1){ 
@@ -611,7 +636,7 @@ int main(void){
                     acumuladoIVA += totalProductosIVA;
                     acumuladoConIVA += totalVentas;     
 
-                    crearPDF(carrito, j, cliente, dni, subtotal, totalProductosIVA, totalVentas);
+                    //crearPDF(carrito, j, cliente, dni, subtotal, totalProductosIVA, totalVentas);
 
                     //Finalizada la venta borramos el carrito actual para que se pueda generar una nueva venta
                 
