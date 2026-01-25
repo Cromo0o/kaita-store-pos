@@ -68,7 +68,7 @@ To optimize performance and meet academic standards, the system utilizes:
 <table align="center">
   <tr>
     <td align="center"><b>Matthew Llerena Montoya</b></td>
-    <td align="center"><b>Kaya Alfusi</b></td>
+    <td align="center"><b>Kaya Alfusi Duque</b></td>
   </tr>
 </table>
 
