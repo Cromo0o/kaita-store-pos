@@ -19,6 +19,7 @@ void ordenarInventarioA_Z(struct productos lista[], int tamanioArreglo){
     //Si strcmp devuelve un valor mayor a 0, el primer nombre va después en el abecedario que el segundo
     //Si devuelve 0 son iguales
     //Si strcmp devuelve un valor menor a 0, el primer nombre va antes
+    //Compara segun el código ASCII
     for (int i = 0; i < tamanioArreglo - 1; i++){
         int min = i;    //Posición del valor que va antes
         for (int j = i+1; j < tamanioArreglo; j++){
@@ -27,6 +28,7 @@ void ordenarInventarioA_Z(struct productos lista[], int tamanioArreglo){
             }
         }
         if (min != i){
+            //He ahi la razon de usar estructuras
             //Intercambio toda la estructura del producto para ordenar precio, stock y demás
             struct productos temp = lista[i];
             lista[i] = lista[min];
@@ -351,6 +353,8 @@ int main(void){
                     //Límite por unidades totales en el carrito
                     while (1) {
                         int unidadesTotales = 0;
+                        //Se podria mejorar si utilizamos memory allocation (malloc)
+                        //Que no necesitemos un limite, va asignando segun lo necesite
                         const int MAX_PRODUCTOS = 10;
                         
                         // Calcular el total de unidades en el carrito
@@ -507,7 +511,7 @@ int main(void){
 
                         if (( i >= 0 ) && ( i <= j )){
                             printf("*--------------------------------------------------------------------------*\n");
-                            printf("|  Cuantas unidades de %s desea borrar actualmente tiene %d\n  |\n", carrito[i].marca);
+                            printf("|  Cuantas unidades de %s desea borrar?                          |\n", carrito[i].marca);
                             printf("|  Actualmente tiene: %d                                                   |\n", carrito[i].stock);
                             printf("*--------------------------------------------------------------------------*\n>>");
                             scanf("%d", &unidadesBorrar);
@@ -553,7 +557,8 @@ int main(void){
                 //Lista de productos en el carrito
                 case 3:
                     mostrarCarrito(carrito, tamanioCarrito);
-                    printf("*------------------------*");
+                    printf("\n");
+                    printf("*------------------------*\n");
                     printf("|  Volviendo al menu...  |\n");
                     printf("*------------------------*\n");
                     break;
@@ -590,11 +595,11 @@ int main(void){
                         i -= 1;
 
                         if ( ( i >= 0 ) && ( i <= tamanioArreglo ) ){
-                            printf("*---------------------------------------------*\n");
+                            printf("*--------------------------------------------------------*\n");
                             printf("|  El precio actual de %s de $%.2f   |\n", lista[i].marca, lista[i].precio);
-                            printf("*---------------------------------------------*\n>>");
-                            printf("|        Qué nuevo precio desea poner?\n      |\n>>");
-                            printf("*---------------------------------------------*\n>>");
+                            printf("*--------------------------------------------------------*\n");
+                            printf("|           Qué nuevo precio desea poner?                |\n");
+                            printf("*--------------------------------------------------------*\n>>");
                             scanf("%f", &precioActualizar);
 
                             if (precioActualizar >= 0.00){
